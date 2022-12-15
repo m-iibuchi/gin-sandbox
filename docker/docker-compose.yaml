@@ -1,0 +1,50 @@
+# docker-compoes.yaml
+version: '3'
+
+services:
+  golang:
+    container_name: gin-sandbox-golang
+    build:
+      context: ./golang
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    volumes:
+      - ../gin-app:/go/src/app
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: gin-sandbox
+    tty: true
+
+  mysql:
+      container_name: gin-sandbox-mysql
+      image: mysql:5.7.22
+      environment:
+          MYSQL_ROOT_PASSWORD: admin
+          MYSQL_USER: admin
+          MYSQL_PASSWORD: admin
+          MYSQL_DATABASE: gin-sandbox
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./mysql/data:/var/lib/mysql
+        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        - ./mysql/sql:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+      container_name: gin-sandbox-phpmyadmin
+      image: phpmyadmin/phpmyadmin
+      environment:
+          - PMA_ARBITRARY=1
+          - PMA_HOST=mysql
+          - PMA_USER=admin
+          - PMA_PASSWORD=admin
+      links:
+          - mysql
+      ports:
+          - 8888:80
+      volumes:
+          - /sessions
