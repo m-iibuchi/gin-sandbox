@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Remote Debugger",
+            "type": "go",
+            "request": "attach",
+            "mode": "remote",
+            "remotePath": "/go/src/app",
+            "port": 8080,
+            "host": "localhost",
+            "cwd": "${workspaceRoot}/gin-app",
+            "env": {},
+            "args": [],
+        }
+    ]
+}
