@@ -1,7 +1,9 @@
 package main
 
-import "log"
+import (
+    "gin-sandbox/app"
+)
 
 func main() {
-    log.Println("Start App...")
+    app.StartApp()
 }
