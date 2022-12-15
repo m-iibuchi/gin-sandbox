@@ -3,4 +3,4 @@
 #sleep 90s
 
 #run the setup script to create the DB and the schema in the DB
-mysql -u admin -padmin money-boys < "/docker-entrypoint-initdb.d/001-create-tables.sql"
+mysql -u admin -padmin gin-sandbox < "/docker-entrypoint-initdb.d/001-create-tables.sql"
