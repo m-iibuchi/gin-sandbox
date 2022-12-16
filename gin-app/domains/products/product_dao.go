@@ -2,7 +2,6 @@ package products
 
 import (
 	"fmt"
-	"log"
 
 	"gin-sandbox/datasources/mysql/products_db"
 	"gin-sandbox/utils/errors"
@@ -13,37 +12,19 @@ var (
 )
 
 func (p *Product) Get() *errors.ApiErr {
-	// DBの接続確認
-	sqlDB, _ := products_db.Client.DB()
-	if err := sqlDB.Ping(); err != nil {
-		log.Fatal(err)
+	if result := products_db.Client.Where("id = ?", p.ID).Take(&p); result.Error != nil {
+		return errors.NewInternalServerError(
+			fmt.Sprintf("error when trying to get product: %s", result.Error),
+		)
 	}
-
-	result := productsDB[p.ID]
-	if result == nil {
-		return errors.NewNotFoundError(fmt.Sprintf("product %d not found", p.ID))
-	}
-
-	p.ID = result.ID
-	p.Name = result.Name
-	p.Detail = result.Detail
-	p.Price = result.Price
-	p.Img = result.Img
-	p.CreatedAt = result.CreatedAt
-	p.UpdatedAt = result.UpdatedAt
-	p.DeletedAt = result.DeletedAt
-
 	return nil
 }
 
 func (p *Product) Save() *errors.ApiErr {
-	current := productsDB[p.ID]
-	if current != nil {
-		if current.Name == p.Name {
-			return errors.NewBadRequestError(fmt.Sprintf("name %s already registered", p.Name))
-		}
-		return errors.NewBadRequestError(fmt.Sprintf("product %d already exists", p.ID))
+	if result := products_db.Client.Create(&p); result.Error != nil {
+		return errors.NewInternalServerError(
+			fmt.Sprintf("error when trying to save product: %s", result.Error),
+		)
 	}
-	productsDB[p.ID] = p
 	return nil
 }
