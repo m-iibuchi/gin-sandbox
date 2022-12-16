@@ -44,3 +44,10 @@ func (p *Product) PartialUpdate() *errors.ApiErr {
 	}
 	return nil
 }
+
+func (p *Product) Delete() *errors.ApiErr {
+	if result := products_db.Client.Delete(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
+	return nil
+}

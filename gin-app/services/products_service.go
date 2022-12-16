@@ -61,3 +61,8 @@ func UpdateProduct(isPartial bool, product products.Product) (*products.Product,
 
 	return current, nil
 }
+
+func DeleteProduct(productID uint) *errors.ApiErr {
+	product := &products.Product{Model: gorm.Model{ID: productID}}
+	return product.Delete()
+}

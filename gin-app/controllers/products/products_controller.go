@@ -12,10 +12,10 @@ import (
 )
 
 func GetProduct(c *gin.Context) {
-	productID, productErr := strconv.ParseUint(c.Param("product_id"), 10, 64)
-	if productErr != nil {
-		err := errors.NewBadRequestError("product id should be a number")
-		c.JSON(err.Status, err)
+	// パラメータ検証
+	productID, idErr := getProductID(c.Param("product_id"))
+	if idErr != nil {
+		c.JSON(idErr.Status, idErr)
 		return
 	}
 
@@ -48,10 +48,9 @@ func CreateProduct(c *gin.Context) {
 
 func UpdateProduct(c *gin.Context) {
 	// パラメータ検証
-	productID, productErr := strconv.ParseUint(c.Param("product_id"), 10, 64)
-	if productErr != nil {
-		err := errors.NewBadRequestError("product id should be a number")
-		c.JSON(err.Status, err)
+	productID, idErr := getProductID(c.Param("product_id"))
+	if idErr != nil {
+		c.JSON(idErr.Status, idErr)
 		return
 	}
 
@@ -73,4 +72,28 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+func getProductID(productIDParam string) (uint, *errors.ApiErr) {
+	productID, productErr := strconv.ParseUint(productIDParam, 10, 64)
+	if productErr != nil {
+		return 0, errors.NewBadRequestError("product id should be a number")
+	}
+	return uint(productID), nil
+}
+
+func DeleteProduct(c *gin.Context) {
+	// パラメータ検証
+	productID, idErr := getProductID(c.Param("product_id"))
+	if idErr != nil {
+		c.JSON(idErr.Status, idErr)
+		return
+	}
+
+	if err := services.DeleteProduct(productID); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
+
 }

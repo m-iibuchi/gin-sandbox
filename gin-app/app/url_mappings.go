@@ -7,4 +7,5 @@ func mapUrls() {
 	router.POST("/products", products.CreateProduct)
 	router.PUT("/products/:product_id", products.UpdateProduct)
 	router.PATCH("/products/:product_id", products.UpdateProduct)
+	router.DELETE("/products/:product_id", products.DeleteProduct)
 }
