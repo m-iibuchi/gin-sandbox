@@ -15,3 +15,11 @@ func NewBadRequestError(message string) *ApiErr {
 		Error:   "bad_request",
 	}
 }
+
+func NewNotFoundError(message string) *ApiErr {
+	return &ApiErr{
+		Message: message,
+		Status:  http.StatusNotFound,
+		Error:   "not_found",
+	}
+}
