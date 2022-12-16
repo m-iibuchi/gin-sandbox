@@ -27,3 +27,20 @@ func (p *Product) Save() *errors.ApiErr {
 	}
 	return nil
 }
+
+func (p *Product) Update() *errors.ApiErr {
+	if result := products_db.Client.Save(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
+	return nil
+}
+
+func (p *Product) PartialUpdate() *errors.ApiErr {
+	if result := products_db.Client.
+		Table("products").
+		Where("id IN (?)", p.ID).
+		Updates(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
+	return nil
+}

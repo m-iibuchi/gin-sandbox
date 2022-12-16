@@ -45,3 +45,32 @@ func CreateProduct(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, newProduct)
 }
+
+func UpdateProduct(c *gin.Context) {
+	// パラメータ検証
+	productID, productErr := strconv.ParseUint(c.Param("product_id"), 10, 64)
+	if productErr != nil {
+		err := errors.NewBadRequestError("product id should be a number")
+		c.JSON(err.Status, err)
+		return
+	}
+
+	// リクエストデータ取得
+	var product products.Product
+	if err := c.ShouldBindJSON(&product); err != nil {
+		apiErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(apiErr.Status, apiErr)
+		return
+	}
+
+	product.ID = uint(productID)
+
+	isPartial := c.Request.Method == http.MethodPatch
+	result, err := services.UpdateProduct(isPartial, product)
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
