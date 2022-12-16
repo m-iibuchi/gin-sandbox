@@ -2,7 +2,9 @@ package products
 
 import (
 	"fmt"
+	"log"
 
+	"gin-sandbox/datasources/mysql/products_db"
 	"gin-sandbox/utils/errors"
 )
 
@@ -11,6 +13,12 @@ var (
 )
 
 func (p *Product) Get() *errors.ApiErr {
+	// DBの接続確認
+	sqlDB, _ := products_db.Client.DB()
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
 	result := productsDB[p.ID]
 	if result == nil {
 		return errors.NewNotFoundError(fmt.Sprintf("product %d not found", p.ID))
