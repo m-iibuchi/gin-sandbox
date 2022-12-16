@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	productsDB = make(map[uint64]*Product)
+	productsDB = make(map[uint]*Product)
 )
 
 func (p *Product) Get() *errors.ApiErr {

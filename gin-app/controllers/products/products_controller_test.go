@@ -12,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
 
 func requestHandler(p interface{}) (*gin.Context, *httptest.ResponseRecorder) {
@@ -46,8 +47,8 @@ func getRequestHandler(id string) (*gin.Context, *httptest.ResponseRecorder) {
 func TestCreateProductNoError(t *testing.T) {
 	// テストデータ準備
 	p := products.Product{
-		ID:   123,
-		Name: "coca cola",
+		Model: gorm.Model{ID: 123},
+		Name:  "coca cola",
 	}
 
 	// リクエスト準備
@@ -93,29 +94,10 @@ func TestCreateProductWith404Error(t *testing.T) {
 	assert.EqualValues(t, "bad_request", apiErr.Error)
 }
 
-func TestProductValidateNoError(t *testing.T) {
-	p := products.Product{ID: 123, Name: "coca cola"}
-
-	err := p.Validate()
-
-	assert.Nil(t, err)
-}
-
-func TestProductValidateBadRequestError(t *testing.T) {
-	p := products.Product{ID: 123}
-
-	err := p.Validate()
-
-	assert.NotNil(t, err)
-	assert.EqualValues(t, "invalid product name", err.Message)
-	assert.EqualValues(t, 400, err.Status)
-	assert.EqualValues(t, "bad_request", err.Error)
-}
-
 // 正常系
 func TestGetProductNoError(t *testing.T) {
 	// Arrange
-	p := products.Product{ID: 1, Name: "coca cola"}
+	p := products.Product{Model: gorm.Model{ID: 1}, Name: "coca cola"}
 	c, _ := requestHandler(p)
 	CreateProduct(c)
 

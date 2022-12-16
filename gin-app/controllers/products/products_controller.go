@@ -19,7 +19,7 @@ func GetProduct(c *gin.Context) {
 		return
 	}
 
-	product, getErr := services.GetProduct(productID)
+	product, getErr := services.GetProduct(uint(productID))
 	if getErr != nil {
 		c.JSON(getErr.Status, getErr)
 		return
